@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.auth import get_permission_codename
 
+from typeidea.base_admin import BaseOwnerAdmin
 from typeidea.custom_site import custom_site
 from .models import Post,Category,Tag
 from .adminforms import PostAdminForm
@@ -35,15 +36,10 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
 
 
 @admin.register(Category,site=custom_site)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(BaseOwnerAdmin):
     list_display = ('name','status','is_nav','created_time','post_count')
     fields = ('name','status','is_nav')
-    list_filter = [CategoryOwnerFilter]
     inlines = [PostInline]
-
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(CategoryAdmin,self).save_model(request,obj,form,change)
 
     def post_count(self,obj):
         return obj.post_set.count()
@@ -52,17 +48,13 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Tag,site=custom_site)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(BaseOwnerAdmin):
     list_display = ('name','status','created_time')
     fields = ('name','status')
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(TagAdmin,self).save_model(request,obj,form,change)
-
 
 @admin.register(Post,site=custom_site)
-class PostAdmin(admin.ModelAdmin):
+class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = [
         'title','category','status','owner',
@@ -70,7 +62,7 @@ class PostAdmin(admin.ModelAdmin):
     ]
     list_display_links = []
 
-    list_filter = []
+    list_filter = [CategoryOwnerFilter,]
 
     search_fields = ['title','category__name']
 
@@ -109,7 +101,8 @@ class PostAdmin(admin.ModelAdmin):
         })
     )
 
-    #filter_horizontal = ('tags',)
+    #filter_horizontal = ('tag',)
+    #filter_vertical = ('tag',)
 
     def operator(self,obj):
         return format_html(
@@ -119,27 +112,19 @@ class PostAdmin(admin.ModelAdmin):
 
     operator.short_description = '操作'
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        return super(PostAdmin,self).save_model(request, obj, form, change)
+    # class Media:
+    #     css = {
+    #         'all':('https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css',),
+    #     }
+    #     js = ('https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.bundle.js',)
 
-    def get_queryset(self, request):
-        qs = super(PostAdmin,self).get_queryset(request)
-        return qs.filter(owner=request.user)
-
-    #class Media:
-        # css = {
-        #     'all':('https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css',),
-        # }
-        #js = ('https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js',)
-
-    def has_add_permission(self, request):
-        opts = self.opts
-        codename = get_permission_codename('add',opts)
-        perm_code = "%s.%s" % (opts.add_label,codename)
-        resp = requests.get(PERMISSION_API.format(request.user.username,perm_code))
-        if resp.status_code == 200:
-            return True
-        else:
-            return False
+    # def has_add_permission(self, request):
+    #     opts = self.opts
+    #     codename = get_permission_codename('add',opts)
+    #     perm_code = "%s.%s" % (opts.app_label,codename)
+    #     resp = requests.get(PERMISSION_API.format(request.user.username,perm_code))
+    #     if resp.status_code == 200:
+    #         return True
+    #     else:
+    #         return False
 
