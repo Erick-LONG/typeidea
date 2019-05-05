@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.contrib.auth import get_permission_codename
+from django.contrib.admin.models import LogEntry
 
 from typeidea.base_admin import BaseOwnerAdmin
 from typeidea.custom_site import custom_site
@@ -102,7 +103,7 @@ class PostAdmin(BaseOwnerAdmin):
     )
 
     #filter_horizontal = ('tag',)
-    #filter_vertical = ('tag',)
+    filter_vertical = ('tag',)
 
     def operator(self,obj):
         return format_html(
@@ -128,3 +129,7 @@ class PostAdmin(BaseOwnerAdmin):
     #     else:
     #         return False
 
+
+@admin.register(LogEntry,site=custom_site)
+class LogEntryAdmin(admin.ModelAdmin):
+    list_display = ['object_repr','object_id','action_flag','user','change_message']
