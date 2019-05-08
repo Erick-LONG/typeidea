@@ -9,20 +9,20 @@
 <body>
 <div class="container head">
     <nav class="navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/">首页</a>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            {% for cate in navs %}
-                <li class="nav-item">
-                <a class="nav-link" href="{% url 'category-list' cate.id %}"></a>
-                </li>
-            {% endfor %}
-        </ul>
-    <form class="form-inline my-2 my-lg-0" action="GET">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">搜索</button>
-    </form>
-    </div>
+        <a class="navbar-brand" href="/">首页</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% for cate in navs %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'category-list' cate.id %}"></a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <form class="form-inline my-2 my-lg-0" method="GET" action="/search/">
+                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search" aria-label="Search" value="{{ keyword }}">
+                <button class="btn btn-outline-success" type="submit">搜索</button>
+            </form>
+        </div>
     </nav>
     <div class="jumbotron">
         <h1 class="display-4">Typeidea</h1>
