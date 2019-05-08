@@ -5,39 +5,10 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView,ListView
 from config.models import SideBar
 from .models import Post, Tag, Category
-
+from comment.forms import CommentForm
+from comment.models import Comment
 
 # Create your views here.
-
-
-# def post_list(request, category_id=None, tag_id=None):
-#     tag = None
-#     category = None
-#     if tag_id:
-#         post_list, tag = Post.get_by_tag(tag_id)
-#     elif category_id:
-#         post_list, category = Post.get_by_category(category_id)
-#     else:
-#         post_list = Post.latest_posts()
-#
-#     context = {
-#         'category': category,
-#         'tag': tag,
-#         'post_list': post_list,
-#         'sidebars':SideBar.get_all()
-#     }
-#     context.update(Category.get_navs())
-#     return render(request, 'blog/list.html', context=context)
-#
-#
-# def post_detail(request, post_id=None):
-#     try:
-#         post = Post.objects.get(id=post_id)
-#     except Post.DoesNotExist:
-#         post = None
-#     context = {'post': post,'sidebars':SideBar.get_all()}
-#     context.update(Category.get_navs())
-#     return render(request, 'blog/detail.html', context=context)
 
 
 class CommonViewMixin:
@@ -63,6 +34,14 @@ class PostDetailView(DetailView,CommonViewMixin):
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'comment_form':CommentForm,
+            'comment_list':Comment.get_by_target(self.request.path)
+        })
+        return context
 
 
 class PostListView(ListView):
