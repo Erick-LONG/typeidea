@@ -23,7 +23,8 @@
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/typeidea/typeidea/templates" />
+        <option value="$MODULE_DIR$/typeidea/typeidea/themes/default/templates" />
+        <option value="$MODULE_DIR$/typeidea/typeidea/themes/bootstrap/templates" />
       </list>
     </option>
   </component>
