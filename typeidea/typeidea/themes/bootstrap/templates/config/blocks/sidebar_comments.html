@@ -7,8 +7,8 @@
 <body>
 <ul>
     {% for comment in comments %}
-        <li><a href="/post/{{ comment.target_id }}.html">{{ comment.target.title }}</a></li> |
-        {{ comment.nickname }} : {{ comment.content }}
+        <li><a href="{{ comment.target }}">{{ comment.target.title }}</a></li> |
+        {{ comment.nickname }} : {% autoescape off %} {{ comment.content }} {% endautoescape %}
     {% endfor %}
 </ul>
 </body>

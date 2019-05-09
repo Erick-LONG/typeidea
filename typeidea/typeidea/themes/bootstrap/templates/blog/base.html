@@ -4,7 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}首页{% endblock %} - 博客系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        .post {
+            margin-bottom: 5px;
+        }
+    </style>
+{% block extra_head %}
+
+{% endblock %}
 </head>
 <body>
 <div class="container head">
@@ -14,12 +23,13 @@
             <ul class="navbar-nav mr-auto">
                 {% for cate in navs %}
                     <li class="nav-item">
-                    <a class="nav-link" href="{% url 'category-list' cate.id %}"></a>
+                        <a class="nav-link" href="{% url 'category-list' cate.id %}">{{ cate.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
             <form class="form-inline my-2 my-lg-0" method="GET" action="/search/">
-                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search" aria-label="Search" value="{{ keyword }}">
+                <input class="form-control mr-sm-2" type="search" name="keyword" placeholder="Search"
+                       aria-label="Search" value="{{ keyword }}">
                 <button class="btn btn-outline-success" type="submit">搜索</button>
             </form>
         </div>
@@ -37,16 +47,17 @@
 
             {% endblock %}
         </div>
+
         <div class="col-3">
             {% block sidebar %}
                 {% for sidebar in sidebars %}
                     <div class="card sidebar">
-                    <div class="card-body">
-                        <h4 class="card-title">{{ sidebar.title }}</h4>
-                        <p>
-                            {{ sidebar.content_html }}
-                        </p>
-                    </div>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ sidebar.title }}</h4>
+                            <p>
+                                {{ sidebar.content_html }}
+                            </p>
+                        </div>
                     </div>
                 {% endfor %}
             {% endblock %}
@@ -58,15 +69,15 @@
 <footer class="footer">
     {% block footer %}
         <div class="container">
-        <hr/>
-        <nav class="nav category">
-            {% for cate in categories %}
-            <a href="{% url 'category-list' cate.id %} " class="nav-link">{{ cate.name }}</a>
-            {% endfor %}
-        </nav>
+            <hr/>
+            <nav class="nav category">
+                {% for cate in categories %}
+                    <a href="{% url 'category-list' cate.id %} " class="nav-link">{{ cate.name }}</a>
+                {% endfor %}
+            </nav>
         </div>
         <div class="container power">
-        <span class="text-muted">power by erick</span>
+            <span class="text-muted">power by erick</span>
         </div>
     {% endblock %}
 </footer>

@@ -1,5 +1,5 @@
 {% extends 'blog/base.html' %}
-
+{% load comment_block %}
 {% block title %}
 友情链接
 {% endblock %}
@@ -24,3 +24,5 @@
     </tbody>
     </table>
 {% endblock %}
+
+{% comment_block request.path %}

@@ -1,3 +1,4 @@
+import mistune
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -69,6 +70,7 @@ class Post(models.Model):
     title = models.CharField(max_length=255,verbose_name='标题')
     desc = models.CharField(max_length=1024,blank=True,verbose_name='摘要')
     content = models.TextField(verbose_name='正文',help_text='正文必须为markdown格式')
+    content_html = models.TextField(verbose_name='正文HTML代码',blank=True,editable=False)
     status = models.PositiveIntegerField(default=STATUS_NORMAL,choices=STATUS_ITEMS,verbose_name='状态')
     category = models.ForeignKey(Category,verbose_name='分类')
     tag = models.ManyToManyField(Tag,verbose_name='标签')
@@ -76,6 +78,10 @@ class Post(models.Model):
     pv = models.PositiveIntegerField(default=1)
     uv = models.PositiveIntegerField(default=1)
     created_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
+
+    def save(self,*args,**kwargs ):
+        self.content_html = mistune.markdown(self.content)
+        super().save(*args,**kwargs)
 
     @staticmethod
     def get_by_tag(tag_id):

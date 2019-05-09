@@ -22,26 +22,18 @@ class CommonViewMixin:
         return context
 
 
-class IndexView(ListView):
+class IndexView(CommonViewMixin,ListView):
     queryset = Post.latest_posts()
     paginate_by = 5
     context_object_name = 'post_list'
     template_name = 'blog/list.html'
 
 
-class PostDetailView(DetailView,CommonViewMixin):
+class PostDetailView(CommonViewMixin,DetailView):
     queryset = Post.latest_posts()
     template_name = 'blog/detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'post_id'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'comment_form':CommentForm,
-            'comment_list':Comment.get_by_target(self.request.path)
-        })
-        return context
 
 
 class PostListView(ListView):
@@ -57,7 +49,7 @@ class CategoryView(IndexView):
         category_id = self.kwargs.get('category_id')
         category = get_object_or_404(Category,pk=category_id)
         context.update({
-            'category':category,
+            'category': category,
         })
         return context
 
