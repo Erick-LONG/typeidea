@@ -35,7 +35,7 @@ class CommentForm(forms.ModelForm):
 
     def clean_content(self):
         content = self.cleaned_data.get('content')
-        if len(content) <10:
+        if len(content) < 10:
             raise forms.ValidationError('内容太短')
         content = mistune.markdown(content)
         return content
